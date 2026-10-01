@@ -1,0 +1,39 @@
+name: Refresh social counts
+
+# Keeps data/stats.json current. www.ctrlaltalex.com reads this file live from
+# raw.githubusercontent.com, so counts update without redeploying the site.
+# Runs every 6 hours; also runnable by hand from the Actions tab.
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Fetch counts
+        env:
+          # All optional. Without them the job still updates TikTok and
+          # YouTube subscribers from public pages.
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: node scripts/update-stats.mjs
+
+      - name: Commit if anything moved
+        run: |
+          git config user.name  "stats bot"
+          git config user.email "actions@github.com"
+          git add data/stats.json
+          git diff --staged --quiet || git commit -m "chore: refresh social counts"
+          git push
