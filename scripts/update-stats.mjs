@@ -188,7 +188,13 @@ const next = {
 
 const changed = JSON.stringify({ ...prev, updated: null }) !== JSON.stringify({ ...next, updated: null });
 
-await writeFile(STATS_PATH, JSON.stringify(next, null, 2) + '\n');
-
 console.log(log.join('\n'));
-console.log(changed ? '\nstats.json updated.' : '\nNo count changed; only the timestamp moved.');
+
+// Only touch the file when a number moved, so "updated" on the site means the
+// counts actually changed rather than that the job ran.
+if (changed) {
+  await writeFile(STATS_PATH, JSON.stringify(next, null, 2) + '\n');
+  console.log('\nstats.json updated.');
+} else {
+  console.log('\nNo count changed; stats.json left as is.');
+}
