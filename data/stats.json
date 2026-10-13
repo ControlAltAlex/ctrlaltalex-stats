@@ -1,11 +1,12 @@
 {
-  "updated": "2026-10-13T12:21:38.092Z",
+  "updated": "2026-10-13T21:51:05.000Z",
   "instagram": {
     "followers": 53000,
-    "reach30d": 1300000
+    "reach30d": 4000000
   },
   "tiktok": {
-    "followers": 193100
+    "followers": 193100,
+    "reach28d": 2700000
   },
   "youtube": {
     "subscribers": 4370,

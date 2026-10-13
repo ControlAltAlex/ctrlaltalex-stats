@@ -117,7 +117,7 @@ async function tiktok(prev) {
     const followers = Number((html.match(/"followerCount":(\d+)/) || [])[1]);
     if (!followers) throw new Error('followerCount not found (TikTok may be blocking this IP)');
     note('tiktok', true, `${followers} followers`);
-    return { followers };
+    return { ...prev, followers };   // keep hand-set fields such as reach28d
   } catch (err) {
     note('tiktok', false, `${err.message} — keeping previous value`);
     return prev;
